@@ -27,3 +27,4 @@ urllib3
 Werkzeug
 zope.event
 zope.interface
+gunicorn
