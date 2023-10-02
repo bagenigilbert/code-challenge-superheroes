@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Link } from 'react-router-dom';
+import { Link, useParams } from "react-router-dom";
 
-function Power({ apiBaseUrl }) {
+function Power() {
   const [{ data: power, error, status }, setPower] = useState({
     data: null,
     error: null,
@@ -11,23 +10,21 @@ function Power({ apiBaseUrl }) {
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(`${apiBaseUrl}/powers/${id}`)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("Power not found");
-      })
-      .then((data) => {
-        setPower({ data, error: null, status: "resolved" });
-      })
-      .catch((err) => {
-        setPower({ data: null, error: err.message, status: "rejected" });
-      });
-  }, [apiBaseUrl, id]);
+    fetch(`/powers/${id}`).then((r) => {
+      if (r.ok) {
+        r.json().then((power) =>
+          setPower({ data: power, error: null, status: "resolved" })
+        );
+      } else {
+        r.json().then((err) =>
+          setPower({ data: null, error: err.error, status: "rejected" })
+        );
+      }
+    });
+  }, [id]);
 
   if (status === "pending") return <h1>Loading...</h1>;
-  if (status === "rejected") return <h1>Error: {error}</h1>;
+  if (status === "rejected") return <h1>Error: {error.error}</h1>;
 
   return (
     <section>

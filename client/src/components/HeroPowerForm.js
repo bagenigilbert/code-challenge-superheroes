@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 
-function HeroPowerForm({ apiBaseUrl }) {
+function HeroPowerForm() {
   const [heroes, setHeroes] = useState([]);
   const [powers, setPowers] = useState([]);
   const [heroId, setHeroId] = useState("");
@@ -11,16 +11,16 @@ function HeroPowerForm({ apiBaseUrl }) {
   const history = useHistory();
 
   useEffect(() => {
-    fetch(`${apiBaseUrl}/heroes`)
-      .then((response) => response.json())
+    fetch("/heroes")
+      .then((r) => r.json())
       .then(setHeroes);
-  }, [apiBaseUrl]);
+  }, []);
 
   useEffect(() => {
-    fetch(`${apiBaseUrl}/powers`)
-      .then((response) => response.json())
+    fetch("/powers")
+      .then((r) => r.json())
       .then(setPowers);
-  }, [apiBaseUrl]);
+  }, []);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -29,17 +29,17 @@ function HeroPowerForm({ apiBaseUrl }) {
       power_id: powerId,
       strength,
     };
-    fetch(`${apiBaseUrl}/hero_powers`, {
+    fetch("/hero_powers", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
-    }).then((response) => {
-      if (response.ok) {
+    }).then((r) => {
+      if (r.ok) {
         history.push(`/heroes/${heroId}`);
       } else {
-        response.json().then((err) => setFormErrors(err.errors));
+        r.json().then((err) => setFormErrors(err.errors));
       }
     });
   }

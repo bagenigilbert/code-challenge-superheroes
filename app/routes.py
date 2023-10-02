@@ -5,6 +5,9 @@ from app import app, db
 from app.models import Hero, Power, HeroPower
 
 # GET /heroes route
+@app.route('/')
+def index():
+    return '<h1> WELCOME TO HEROES SUPERPOWERS</h1>'
 @app.route('/heroes', methods=['GET'])
 def get_heroes():
     heroes = Hero.query.all()

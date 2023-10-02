@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router";
 
-function PowerEditForm({ apiBaseUrl }) {
+function PowerEditForm() {
   const [{ data: power, errors, status }, setPower] = useState({
     data: null,
     errors: [],
@@ -12,27 +12,25 @@ function PowerEditForm({ apiBaseUrl }) {
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(`${apiBaseUrl}/powers/${id}`)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("Power not found");
-      })
-      .then((data) => {
-        setPower({ data, errors: [], status: "resolved" });
-        setDescription(data.description);
-      })
-      .catch((err) => {
-        setPower({ data: null, errors: [err.message], status: "rejected" });
-      });
-  }, [apiBaseUrl, id]);
+    fetch(`/powers/${id}`).then((r) => {
+      if (r.ok) {
+        r.json().then((power) => {
+          setPower({ data: power, errors: [], status: "resolved" });
+          setDescription(power.description);
+        });
+      } else {
+        r.json().then((err) =>
+          setPower({ data: null, errors: [err.error], status: "rejected" })
+        );
+      }
+    });
+  }, [id]);
 
   if (status === "pending") return <h1>Loading...</h1>;
 
   function handleSubmit(e) {
     e.preventDefault();
-    fetch(`${apiBaseUrl}/powers/${power.id}`, {
+    fetch(`/powers/${power.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -40,11 +38,11 @@ function PowerEditForm({ apiBaseUrl }) {
       body: JSON.stringify({
         description,
       }),
-    }).then((response) => {
-      if (response.ok) {
+    }).then((r) => {
+      if (r.ok) {
         history.push(`/powers/${power.id}`);
       } else {
-        response.json().then((err) =>
+        r.json().then((err) =>
           setPower({ data: power, errors: err.errors, status: "rejected" })
         );
       }
