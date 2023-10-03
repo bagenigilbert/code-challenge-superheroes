@@ -13,7 +13,7 @@ Flask-SQLAlchemy
 future
 gevent
 greenlet
-gunicorn==21.2.0
+gunicorn
 idna
 itsdangerous
 Jinja2
