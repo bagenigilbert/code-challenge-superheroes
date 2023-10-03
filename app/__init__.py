@@ -1,5 +1,4 @@
 # app/__init__.py
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import Config  # Update this line to import from 'config'
